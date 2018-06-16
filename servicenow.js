@@ -212,6 +212,50 @@ ServiceNow.prototype.getSysId=function(type,number,callback){
     });    
 }
 
+//POST - Update table by sysid in ServiceNow
+ServiceNow.prototype.UpdateTableBySysID =function(type,sys_id,data,callback){
+        const options={
+            url:`https://${this.instance}.service-now.com/api/now/table/${type}/${sys_id}?sysparm_input_display_value=true&sysparm_display_value=true`,
+            method:'put',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json'
+            },
+            data:data,
+            auth:{
+                username:`${this.userid}`,
+                password:`${this.password}`
+            }
+        }
+        axios(options).then((val)=>{
+            if(callback == undefined){
+                console.log();
+                console.log('Fix below errors');
+                console.log();
+                console.log('(1) ==> Cannot find Callback function...');            
+                console.log('*********** Sample Request **********');
+                console.log(`ServiceNow.UpdateTask('incident','INC0010006',data,(res)=>console.log(res))`);
+                console.log();
+            }else{
+                callback(val.data.result);
+            }            
+        }).catch((err)=>{
+            if(callback == undefined){
+                console.log();
+                console.log('Fix below errors');
+                console.log();
+                console.log('(1) ==> Cannot find Callback function...');            
+                console.log('*********** Sample Request **********');
+                console.log(`ServiceNow.UpdateTask('incident','INC0010006',data,(res)=>console.log(res))`);
+                console.log();
+                console.log('(2) ==> Bad Request...'); 
+                console.log(err);
+            }else{
+                callback(err);
+            }            
+    });    
+}
+
 //POST - Update task record in ServiceNow
 ServiceNow.prototype.UpdateTask =function(type,number,data,callback){
     this.getSysId(type,number,(sys_id)=>{
